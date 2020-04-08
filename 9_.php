@@ -218,4 +218,21 @@ $Greeting -> say_hello();
 
 
 
+
+//9-8
+// 組み込みクラスを使ってみよう
+$now = new DateTime();
+$now->setTimezone(new DateTimeZone('Asia/Tokyo'));
+echo $now->format('Y-m-d H:i:s')."\n";
+
+$now->modify('+100 days');
+echo "変更後の時刻は、".$now->format('Y-m-d H:i:s')."です。";
+
+
+
+//9-8-1
+
+// DateTimeクラスを使ってみよう
+$date = new DateTime('2020-01-01');
+echo $date->format('l d F Y');
 ?>
