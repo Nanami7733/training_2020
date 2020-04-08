@@ -199,4 +199,23 @@ foreach ($party as $player) {
 // $wizard->spell();
 echo Player::charactorCount()."人で、スライムを攻撃した";
 
+
+
+
+
+//9-7-1
+// クラスメソッドを呼び出そう
+class Greeting{
+    public static function say_hello(){
+        echo "hello paiza";
+    }
+}
+// この下で、クラスメソッドを呼び出す
+
+$Greeting= new Greeting();
+$Greeting -> say_hello();
+
+
+
+
 ?>
