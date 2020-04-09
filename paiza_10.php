@@ -111,6 +111,23 @@ echo "9\n";
 
 
 
+//10-7-1
+function test_exception($date) {
+    try {
+        return new DateTime($date);
+    } catch (Exception $e) {
+        echo "不正な日付です\n";
+        throw $e;
+    }
+}
+
+echo "start\n";
+try{
+    $dateTime = test_exception("199x-01-01");
+}catch (Exception $e){
+    echo "end";
+}
+
 
 
 ?>
