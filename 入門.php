@@ -121,4 +121,27 @@ echo $i;
 
 
 
+//4-6-1
+
+$input = fgets(STDIN);
+// $inputの値が空で無ければループする
+while($input){
+    // 配列に$inputの値を追加
+    $array[] = trim($input);
+    // 標準入力から1行データを取得
+    $input = fgets(STDIN);
+}
+print_r($array);
+
+
+//4-6-3
+// 標準入力から1行取得し値があればループ
+while($input = fgets(STDIN)){
+    // ★if文の前にtrimしておくのがポイント
+    $input = trim($input);
+    if($input == "勇者"){
+        $array[] = $input;
+    }
+}
+echo count($array);
 ?>
