@@ -90,4 +90,35 @@ for($i=1;$i<=$num;$i++){
 }
 
 
+
+//4-5-1
+// 標準入力から1行データを取得
+$input = trim(fgets(STDIN));
+
+while($input){   // $inputの値が空で無ければループする
+    $array[] = $input;      // 配列に$inputの値を追加
+    $input = trim(fgets(STDIN));        // 標準入力から1行データを取得
+}
+print_r($array);
+
+
+
+//4-5-3
+$input = trim(fgets(STDIN));
+$i=0;
+// $inputの値が空で無ければループする
+while($input){
+    // 配列 に$inputの値を追加
+    $array[] = $input;
+    // 標準入力から1行データを取得
+   if($input=="勇者"){
+    $i++;  //勇者の数だけカウントアップ
+    }else{
+ }
+  $input = trim(fgets(STDIN));
+}
+echo $i;
+
+
+
 ?>
