@@ -218,4 +218,31 @@ print_r($item);
 
 
 
+
+//5-4-1to4
+//sort,rsort
+
+//asort,arsort
+
+//ksort,krsort
+
+
+//5-4-5
+
+while($a=fgets(STDIN)){
+    $at=trim($a);
+    $ax=explode(",",$at);
+    
+    $k=$ax[0];
+    $v=$ax[1];
+    $team[$k]=$v;
+    
+}
+
+arsort($team);
+print_r($team);
+
+
+
+
 ?>
