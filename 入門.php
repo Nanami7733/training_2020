@@ -144,4 +144,78 @@ while($input = fgets(STDIN)){
     }
 }
 echo count($array);
+
+
+
+//4-7-2
+// 標準入力から1行取得し値があればループ
+while($input = fgets(STDIN)){
+    $array[] = trim($input);
+}
+// ランダムの上限値を計算して変数に代入
+$max_num = count($array)-1;
+// 配列の中身を出力
+print_r($array);
+// ランダム出力
+$rand_num = rand(0,$max_num);
+echo $array[$rand_num];
+
+
+
+
+
+//5章　連想配列。foreach
+
+//5-2-1 連想配列への格納の仕方
+
+$item = array(
+    "ショートソード" => 12,
+    "銅の盾" => 4,
+    "布の服"=> 7
+);
+print_r($item);
+
+
+
+//5-2-2
+
+
+for($i=0 ; $i<3 ; $i++){
+	$input = trim(fgets(STDIN));
+	
+	$key_value =explode("/", $input);// 入力値を/で分割
+	
+	$key = $key_value[0];// 手前の要素をkeyとして、後の要素をvalueとして連想配列に代入
+	$value = $key_value[1];
+	$team[$key] = $value;
+
+}
+// ここから下に記述　
+// $team のkeyが戦士のvalueを出力
+
+print_r($team["戦士"]);
+
+
+
+
+//5-3-3
+
+while($input = fgets(STDIN)){
+	// 改行等を取り除いて配列に代入
+	$item[] = trim($input);
+}
+// 小さい順に並び替え
+sort($item);
+print_r($item);
+
+
+//5-3-4
+
+$input = trim(fgets(STDIN));
+$item = explode(",", $input);
+rsort($item);
+print_r($item);
+
+
+
 ?>
