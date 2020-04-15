@@ -271,5 +271,101 @@ foreach($array as $member){
 echo $i;
 
 
+//5-6-1
+$item = array(
+	"ショートソード" => 2000,
+	"ロングソード" => 5000,
+	"鉄の盾" => 1600,
+	"鎖かたびら" => 2800
+);
+
+// ここから下に記述
+foreach($item as $key => $value){
+    echo $key."は".$value."円です。\n";
+}
+
+
+
+
+//5-6-2
+
+while($input = trim(fgets(STDIN))){
+	// カンマで分割
+	$key_value = explode(",", $input);
+	$key = $key_value[0];
+	$value = $key_value[1];
+	if($value<=2000){
+	    $item[$key] = $value;
+	}else{
+	    
+	}
+	// 連想配列として$itemに代入
+	
+}
+
+arsort($item);
+
+print_r($item);
+
+
+
+
+
+
+//5-6-3
+while($input = trim(fgets(STDIN))){
+	// カンマで分割
+	$key_value = explode(",", $input);
+	$key = $key_value[0];
+	$value = $key_value[1];
+	// 連想配列として$resultに代入
+	$result[$key] = $value;
+}
+// ここから下に記述
+// 得点が高い順番に並び替え、print_rで出力後、
+// 勇者が何位なのか数字で出力してみましょう。
+arsort($result);
+$i=1;
+
+
+foreach($result as $key => $value){  ///////////////////////////////////////
+    if($key == "勇者"){
+        $rank = $i;
+    }
+    $i++;
+}
+print_r($result);
+echo $rank;
+
+
+
+
+
+//5-8-2
+
+$item_img = array(
+    "剣" => "http://paiza.jp/learning/images/sword.png",
+    "盾" => "http://paiza.jp/learning/images/shield.png",
+    "回復薬" => "http://paiza.jp/learning/images/potion.png",
+    "クリスタル" => "http://paiza.jp/learning/images/crystal.png"
+);
+// ここから下に記述
+
+
+foreach($item_img as $key => $val){
+    //URLを参照可能な、形に変更
+}
+
+
+while($input=fgets(STDIN)){
+    $tri_inp[]=trim($input);    //入力値を数列に代入
+}
+
+
+for($i=0;$i<=5;$i++){           // アイテムの個数会ループする処理
+    $index = $tri_inp[$i];
+    echo "<img src=".$item_img[$index]."><br>\n";
+   
+}
 
 ?>
