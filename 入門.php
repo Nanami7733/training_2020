@@ -243,6 +243,33 @@ arsort($team);
 print_r($team);
 
 
+//5-5-1
+
+$item = array("ショートソード", "ロングソード", "ブレードソード", "バスタードソード");
+// foreach ループで $item 配列の value 全てを一つずつ
+// \n を末尾に付けて改行しながら出力してみましょう。
+foreach($item as $value){
+    echo $value."\n";
+}
+
+
+
+
+//5-5-3
+
+$input = trim(fgets(STDIN));
+$array = explode(",", $input);
+$i=0;
+// ここから下に記述　
+// 配列のvalueに「勇者」が何回出現するか数えて
+foreach($array as $member){
+    if($member=="勇者"){
+        $i++; //勇者の数カウントアップ
+    }
+}
+
+echo $i;
+
 
 
 ?>
