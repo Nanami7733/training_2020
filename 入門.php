@@ -368,4 +368,90 @@ for($i=0;$i<=5;$i++){           // アイテムの個数会ループする処理
    
 }
 
+
+
+//模範解答
+$item_img = array(
+    "剣" => "http://paiza.jp/learning/images/sword.png",
+    "盾" => "http://paiza.jp/learning/images/shield.png",
+    "回復薬" => "http://paiza.jp/learning/images/potion.png",
+    "クリスタル" => "http://paiza.jp/learning/images/crystal.png"
+);
+// ここから下に記述
+while($input = fgets(STDIN)){
+    $input = trim($input);
+    echo "<img src=".$item_img[$input].">";
+}
+
+
+
+
+
+//6-5
+//6-5-1
+$teams = [
+    ["勇者", "忍者"],
+    ["武士", "戦士"],
+    ["僧侶", "魔法使い"],
+  ];
+  
+  
+  for ($i = 0; $i < count($teams); $i++) {
+    for ($j = 0; $j < count($teams[$i]); $j++) {
+      // この下に配列の値を出力するコードを記述
+      echo $teams[$i][$j];
+  
+      echo "\n";
+    }
+  }
+
+  
+
+
+
+  //6-5-2
+  $teams = [
+    ["勇者", "忍者"],
+    ["武士", "戦士"],
+    ["僧侶", "魔法使い"],
+  ];
+  
+  foreach ($teams as $team) {
+    foreach ($team as $member) {
+      // この下に$memberの値を出力するコードを記述
+  
+      print_r($member);
+      echo "\n";
+    }
+  }
+
+
+  //6-7
+  //6-7-1
+  // ドットで文字を出力しよう
+$letter_A = array(
+    array(0, 0, 1, 1, 0, 0),
+    array(0, 1, 0, 0, 1, 0),
+    array(1, 0, 0, 0, 0, 1),
+    array(1, 1, 1, 1, 1, 1),
+    array(1, 0, 0, 0, 0, 1),
+    array(1, 0, 0, 0, 0, 1),
+);
+// ここに、ドットを表示するコードを記述する
+foreach ($letter_A as $column) {
+    foreach ($column as $row) {
+        if ($row == 1) {
+            echo "@";
+        }else {
+            echo " ";
+        }
+    }
+    echo "\n";
+}
+
+
+
+
+
+
 ?>
