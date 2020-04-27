@@ -1,0 +1,110 @@
+cd　ディレクトリ名
+
+php artisan serve  //laravel 起動
+
+
+//1-4 一言掲示板作成
+
+
+ルーティング
+URL　　　　　　　　　　表示ページ　　　　　　　関数　　　　メソッド
+/artuckles    　　　 一覧画面　　　　　     index()      get　　
+/article/<id>    　　詳細画面               show()      get　
+/article/new　　　　新規フォーム            new()        get　
+/article　　　　　　新規作成                creaate()   post
+/article/edit/<id>　　編集フォーム          edit()      get　
+/article/update/<id>　　更新                update()   post
+/article/<id>　　　　　　削除               delete()    delete
+
+DB　　mybbs
+table  article
+
+
+menu   php admin  データベースを作成する　　名前つける　　日本語を使う掲示板の時->utf-8-general-ciを選択する　　作成をクリック
+
+application に反映させるため、隠しファイルの.envを開き
+DB_database = mybbs
+DB_username = root    
+DB_password コメントアウト
+以上の設定で一行掲示板でDB利用する設定が完了。
+
+
+
+//1-5
+データベースを操作するモデルの作成
+ｐｈｐでいじれる
+
+１－４で作成したmybbsをlaravelからいじれるように.envいじった
+
+モデル操作するコントローラ
+反映するマイクレーションも作成可能
+
+
+
+comand
+cd bbs
+php artisan make:model Article -m -c-r
+
+
+bbs > app > Aeticle.php -> モデル定義したファイル　モデル継承したAeticleクラスを定義している　
+
+myblog > app > Http > Cotrollers>ArticleController.php -> ここにコードを記述
+
+database> migrations>~~~~~~_table.php  -> データベースを設定するためのファイル
+                                            記述で反映させる　
+                                            記事データ格納するコンテントを作成
+
+               　　　　　　　　　　　　　　　　 Schema内increments下　＄table -> string('content');  を追加
+                                            文字のためstring
+
+                                            保存
+
+保存まで完了後　ターミナルに戻り
+php artisan migrate           modelの内容変更で完了
+
+bbs 追加できたこと確認可能
+動画面で挿入からサンプルデータの登録可能
+
+
+
+＜演習課題＞×
+
+
+
+//1-6 
+ルーティングを設定（URL）
+
+1-4参照
+
+routes > web.php で確認できる。
+    追加の仕方は以下のように行う
+Route::get('/articles','AeticleController@index')->name('article.list');
+Route::get('/article/{id}','ArticleController@show')->name('article.show');
+routingは機能がわかるように作成する。
+
+保存後
+httpsを使うようにアプリケーションの全体設定を変更する。
+app > providers > appserviceProviders
+内において
+public funtion boot()
+{
+        \URL::forceScheme('https');      //httpsを使いなさい
+}
+
+以上の手順でhttpsを使用する設定が完了する
+
+
+＜演習課題＞×
+
+右の環境には、Laravelで「myblog」というアプリケーションを作ってあります。
+
+このアプリケーションのルーティングを設定して、以下のURLで、「DiaryController」(ダイアリーコントローラ)のindexメソッドを呼び出すようにしてください。
+
+```
+https://localhost:8000/diary
+```
+
+
+web.phpにおいて
+Route::get('/diary', 'DiaryController@index')->name('diary.list');
+を挿入。
