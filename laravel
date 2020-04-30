@@ -300,3 +300,106 @@ index.blade.php
                 </a>
             </p>
         @endforeach
+
+
+
+
+
+//2-1
+
+MVC
+
+モデル   ：扱うデータを保持し操作する。アプリに必要な情報DBから持ってくる
+
+
+ビュー　　：見える部分を作成する。モデルの情報をhtmlで記述し表示する。
+
+
+コントローラー　　：モデル、ビューを呼び出し、得られた結果をブラウザに表示させる
+
+
+
+//2-2
+artisantinker:laravel有効にしたままコマンドで操作ができる。
+
+cd bbs > php artisan tinker
+
+
+参照
+$aall=Article::all()  すべて
+$a1= Article::find(1) 一つ目
+$aall すべて
+
+追記
+ $article = new Article() 　　　オブジェクトの用意
+ ↓
+ $article -> content = 'Hello tinker'   オブジェクトのカラムに新しい値を代入
+ ↓
+ $article -> save()    データベースに保存,反映
+
+ 削除
+$article->delete()   最後に追加したデータを削除
+
+
+
+
+//2-3
+マイグレーションでカラムを追加
+articleモデルに投稿者の名前表すカラムを追加する
+
+
+DB　SQLで操作する
+オブジェクトでDB操作するツール＝o/rマッパー
+
+
+マイグレーション(=text file)
+
+DBの中身を一括して移行、変更する
+laravelのマイグレーション機能では、DB設定ファイル自動生成して、定義や変更一度に行える。
+
+マイグレーションは２段階で行う
+１．マイグレーションファイル生成
+２．１において、必要な情報をDBに適用（MySQL）
+
+マイグレーションの取り消しを、ロールバック
+
+
+カラムの変更するにはdbalが必要
+
+
+
+マイグレーションファイルの自動生成
+cd bbs > php artisan make:migration add_column_username --table=articles
+完了後
+bbs　> database > migrtions > 実行した日付のmigrationファイルができたことを確認できる。
+
+
+upメソッド
+DBに追加する項目を指定する。
+
+
+downメソッド
+取り消したい項目を指定
+
+
+作成したmigrationファイルにカラム追加するコード記述
+ public function up()
+    {
+        Schema::table('articles', function (Blueprint $table) {
+            $table -> atring('user_name');
+        });
+    }
+
+保存後、マイグレーションを実行
+
+terminal
+php artisan migrate
+
+
+
+サンプルの作成　
+$article = Aeticle::find(1)   //1を参照
+
+$article -> user_name = 'paiza'   //user_nameに代入
+
+$article->save()　　　//変更を保存
