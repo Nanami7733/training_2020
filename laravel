@@ -403,3 +403,155 @@ $article = Aeticle::find(1)   //1を参照
 $article -> user_name = 'paiza'   //user_nameに代入
 
 $article->save()　　　//変更を保存
+
+
+
+
+
+//2-4
+モデルに追加したカラムビューで表示
+
+web.php 　　//ルーティング示す
+
+
+
+ArticleController.php
+
+すべて表示する設定になっているため、変更不要
+
+
+index.blade.php
+
+  @foreach ($articles as $article)
+            <p>
+                <a href='{{ route("article.show", ["id" => $article->id]) }}'>
+                    {{ $article->content }}
+                    {{$article->user_name}}
+                </a>
+            </p>
+        @endforeach
+
+
+
+show.blade.php    //個別表示のビュー
+
+<body>
+        <h1>paiza bbs</h1>
+        <p>{{ $message }}</p>
+        <p>{{ $article->content }}</p>
+        <p>{{$article->user_name}}</p>
+
+        <p>
+            <a href={{ route('article.list') }}>一覧に戻る</a>
+        </p>
+    </body>
+
+
+
+
+//2-5
+ルートの追加
+
+webブラウザ　＞　webサーバーにリクエスト
+
+アクセス先を自動で切り替える　　リダイレクト
+
+Route::get('/', function () {
+    return redirect('/articles');
+
+https://localhost:8000/
+
+articles(記事一覧)が、表示される
+
+
+
+//2-6
+データベースに書き込みをする
+
+
+ルートの追加
+bbs > routes > web.php
+
+Route::get('/articles', 'ArticleController@index')->name('article.list');
+Route::get('/article/{id}', 'ArticleController@show')->name('article.show');
+Route::get('/article/new','ArticleController@create')->name('article.new');　　　//newの時create メソッド呼び出す
+
+
+
+
+コントローラーの修正
+
+ArticleController.php
+
+ public function create(Request $request)
+    {
+        $article = new Article();
+        
+        $article -> content = 'Hello BBS';　　　//1
+        $article -> user_name = 'paiza';      //2  1,2で固定テキストセット
+        $article -> save();　　　　　　　　　　//内容をデータベースに格納
+        return redirect('/articles');　　　　　//記事一覧にリダイレクト
+    }
+
+
+
+article/new >　エラー
+web.php に問題あり
+↓
+Route::get('/articles', 'ArticleController@index')->name('article.list');
+Route::get('/article/new','ArticleController@create')->name('article.new');　
+Route::get('/article/{id}', 'ArticleController@show')->name('article.show');　　
+
+
+
+記事一覧のページに、新規記事を追加するリンクを作成する
+
+ <div>
+            <a href= {{ route('article.new')}}>新規投稿</a>
+        </div>
+
+
+
+
+
+
+
+
+
+//2-7
+記事を削除
+
+
+ルートの追加
+bbs > routes > web.php
+
+Route::get('/articles', 'ArticleController@index')->name('article.list');
+Route::get('/article/new', 'ArticleController@create')->name('article.new');
+Route::get('/article/{id}', 'ArticleController@show')->name('article.show');
+Route::delete('/article/{id}','ArticleController@destroy') -> name('article.delete');　　　//deleteメソッドのルートを追加
+
+
+コントローラーのデストロイメソッド修正
+bbs > app > http > Controllers > ArticleController.php
+
+public function destroy(Article $article)
+    {
+        $article = Article::find($id);
+        $article -> delete();
+        return redirect('/articles');
+    }
+
+
+
+削除ボタンの追加
+bbs > resources > views > show.blade.php
+
+ <p>
+            <a href={{ route('article.list') }}>一覧に戻る</a>
+        </p>
+        {{ Form::open(['method' => 'delete', 'route' => ['article.delete', $article->id]]) }}
+                {{ Form::submit('削除') }}
+            {{ Form::close() }}
+
+
+
