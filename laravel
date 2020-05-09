@@ -309,13 +309,15 @@ index.blade.php
 
 MVC
 
-モデル   ：扱うデータを保持し操作する。アプリに必要な情報DBから持ってくる
+モデル   ：扱うデータを保持し操作する。アプリに必要な情報DBから持ってくる。モデル通じてDB操作
 
 
 ビュー　　：見える部分を作成する。モデルの情報をhtmlで記述し表示する。
 
 
 コントローラー　　：モデル、ビューを呼び出し、得られた結果をブラウザに表示させる
+
+
 
 
 
@@ -505,6 +507,7 @@ Route::get('/article/{id}', 'ArticleController@show')->name('article.show');　�
 
 
 記事一覧のページに、新規記事を追加するリンクを作成する
+show.blade.php
 
  <div>
             <a href= {{ route('article.new')}}>新規投稿</a>
@@ -552,6 +555,399 @@ bbs > resources > views > show.blade.php
         {{ Form::open(['method' => 'delete', 'route' => ['article.delete', $article->id]]) }}
                 {{ Form::submit('削除') }}
             {{ Form::close() }}
+
+
+
+
+
+
+
+
+//3章 
+
+//3-2　共通部分をテンプレ化する
+
+
+
+reourcesのindexとshow.blade.phpが各画面の見掛けを定義している
+
+index用いて作成する
+
+ cp resources/views/index.blade.php resources/views/layout.blade.php
+
+cp A B   //AをBにコピーする
+
+
+
+layout.blade.php修正　　　//こいつが共通部分の中身！！！こいつ修正すれば、共通のやつ入れたページ全替わり
+
+修正前
+ <h1>paiza bbs</h1>
+        <p>{{ $message }}</p>
+        @foreach ($articles as $article)
+            <p>
+                <a href='{{ route("article.show", ["id" =>  $article->id]) }}'>
+                    {{ $article->content }},
+                    {{ $article->user_name }}
+                </a>
+            </p>
+        @endforeach
+        <div>
+            <a href={{ route('article.new') }}>新規投稿</a>
+        </div>
+
+
+修正後
+@yield('content')      //ここに各画面の異なる部分を埋め込む
+
+
+
+
+
+
+
+記事一覧（index.blade.php）を修正
+
+修正前
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset='utf-8'>
+        <title>paiza bbs</title>
+        <style>body {padding: 10px;}</style>
+    </head>
+    <body>
+        <h1>paiza bbs</h1>
+        <p>{{ $message }}</p>
+        @foreach ($articles as $article)
+            <p>
+                <a href='{{ route("article.show", ["id" =>  $article->id]) }}'>
+                    {{ $article->content }},
+                    {{ $article->user_name }}
+                </a>
+            </p>
+        @endforeach
+        <div>
+            <a href={{ route('article.new') }}>新規投稿</a>
+        </div>
+    </body>
+</html>
+
+
+
+修正後
+
+@extends('layout')    //共通テンプレートですよ宣言
+
+@section('content')　　　　　//ここからendsectionまでをyieldに当てはめる
+<h1>paiza bbs</h1>
+        <p>{{ $message }}</p>
+        @foreach ($articles as $article)
+            <p>
+                <a href='{{ route("article.show", ["id" =>  $article->id]) }}'>
+                    {{ $article->content }},
+                    {{ $article->user_name }}
+                </a>
+            </p>
+        @endforeach
+        <div>
+            <a href={{ route('article.new') }}>新規投稿</a>
+        </div>
+@endsection
+
+
+
+
+
+詳細ページの修正(show.blade.php)
+
+修正前
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset='utf-8'>
+        <title>paiza bbs</title>
+        <style>body {padding: 10px;}</style>
+    </head>
+    <body>
+        <h1>paiza bbs</h1>
+        <p>{{ $message }}</p>
+        <p>{{ $article->content }}</p>
+        <p>{{ $article->user_name }}</p>
+
+        <p>
+            <a href={{ route('article.list') }}>一覧に戻る</a>
+        </p>
+        <div>
+            {{ Form::open(['method' => 'delete', 'route' => ['article.delete', $article->id]]) }}
+                {{ Form::submit('削除') }}
+            {{ Form::close() }}
+        </div>
+    </body>
+</html>
+
+
+
+
+修正後
+
+@extends('layout')　　　　　//共通部分ぶち込みます宣言
+
+@section('content')　　　　　　　//ここからendsectionをぶち込みますよ
+        <h1>paiza bbs</h1>
+        <p>{{ $message }}</p>
+        <p>{{ $article->content }}</p>
+        <p>{{ $article->user_name }}</p>
+
+        <p>
+            <a href={{ route('article.list') }}>一覧に戻る</a>
+        </p>
+        <div>
+            {{ Form::open(['method' => 'delete', 'route' => ['article.delete', $article->id]]) }}
+                {{ Form::submit('削除') }}
+            {{ Form::close() }}
+        </div>
+    </body>
+@endsection
+
+
+
+
+
+
+
+
+
+//3-4  Bootstrapの適用
+
+
+テンプレートファイルの作成
+bbs > resources > views右クリック >　新規ファイル作成　> style-sheet.blade.php
+
+
+style-sheet.blade.php編集
+Bootstrapを読み込ませる
+
+<meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
+<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css'>
+<style>body {padding-top: 80px;}</style>　　　//上部に余白
+
+
+
+
+共通テンプレートにstyle-sheet.blade読み込む
+layout.blade.phpを編集
+ブラウザのウィンドウサイズ変更しても、比が変わらないようにbodyタグも修正する
+
+
+修正前
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset='utf-8'>
+        <title>paiza bbs</title>
+        <style>body {padding: 80px;}</style>
+    </head>
+    <body>
+        @yield('content')
+    </body>
+</html>
+
+
+
+修正後
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset='utf-8'>
+        <title>paiza bbs</title>
+        @include('style-sheet')
+    </head>
+    <body>
+        <div class='contaicer'>　　　　//Bootstrapはclass='container'の部分をいい感じにしてくれる
+        @yield('content')
+        </div>
+    </body>
+</html>
+
+
+
+
+
+
+nav barの追加
+
+views右クリック > nav.blade.php 作成
+<nav class='navbar navbar-expand-md navbar-dark bg-dark fixed-top'>
+    <a class='navbar-brand' href={{ route('article.list') }}>paiza bbs</a>
+</nav>
+
+
+
+nav barを共通部分として追加する
+
+layout.balade.php
+
+修正前
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset='utf-8'>
+        <title>paiza bbs</title>
+        @include('style-sheet')
+    </head>
+    <body>
+        <div class='contaicer'>
+        @yield('content')
+        </div>
+    </body>
+</html>
+
+
+修正後
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset='utf-8'>
+        <title>paiza bbs</title>
+        @include('style-sheet')
+    </head>
+    <body>
+        @include('nav')
+        <div class='contaicer'>
+        @yield('content')
+        </div>
+    </body>
+</html>
+
+
+
+
+
+
+
+
+
+//3-4  Bootstrapで見栄え整えよう
+
+
+tableタグで記事の一覧を表示
+
+index.blade.php
+
+
+修正後
+
+
+@extends('layout')
+
+@section('content')
+    <h1>paiza bbs</h1>
+    <p>{{ $message }}</p>
+    <table class='table table-striped table-hover'>　　　　　　　//striped=一行ごと色変える　　　hover=マウス
+    @foreach ($articles as $article)
+        <tr>
+            <td>
+            <a href='{{ route("article.show", ["id" =>  $article->id]) }}'>
+                {{ $article->content }},
+                {{ $article->user_name }}
+            </a>
+            </td>
+            <td>{{$article->user_name}}</td>
+        </tr>
+    @endforeach
+    </table>
+
+    <div>
+        <a href={{ route('article.new') }}>新規投稿</a>
+    </div>
+@endsection
+
+
+
+
+
+
+
+
+リンクをボタン化　（class=btn）
+index.blade.php
+<a href={{ route('article.new') }} class='btn btn-outline-primary'>新規投稿</a>
+
+
+show.blade.php
+詳細ページも
+
+
+<a href={{ route('article.list') }} class='btn btn-outline-primary'>一覧に戻る</a>
+    </p>
+    <div>
+        {{ Form::open(['method' => 'delete', 'route' => ['article.delete', $article->id]]) }}
+            {{ Form::submit('削除',['class' => 'btn btn-outline-secondary']) }}
+        {{ Form::close() }}
+
+
+
+
+//3-4　検索フォーㇺの設置
+
+
+
+検索タブのテンプレートを作成
+viewsに新規作成
+search.blade.php
+{{ Form::open(['method' => 'get']) }}
+    {{ csrf_field() }}
+    <div class='form-group'>
+        {{ Form::label('keyword', 'キーワード:') }}
+        {{ Form::text('keyword', null, ['class' => 'form-control']) }}
+    </div>
+    <div class='form-group'>
+        {{ Form::submit('検索', ['class' => 'btn btn-outline-primary'])}}
+        <a href={{ route('article.list') }}>クリア</a>
+    </div>
+{{ Form::close() }}                //laravelでフォーム使うルール
+
+
+
+index.blade.php
+
+修正後
+   <p>{{ $message }}</p>
+    @include('search')
+    
+    <table class='table table-striped table-hover'>
+
+
+
+
+
+
+//3-6 検索機能の実装
+
+
+ArticleContoroller.php
+
+public function index(Request $request)       //検索タブに入力した値取り出す
+    {
+        if($request->filled'('keyword')){　　　　　　　//検索条件に合ったものある？
+            $keyword = $request -> input('keyword');
+            $message = 'Welcome to my BBS:'.$keyword;
+            $article = Article::where('content','like','%'.$keyword.'%')->get();　　　　//hitした記事のみ取り出している
+        }else{
+            $message = 'Welcome to my BBS';
+        }
+        $articles = Article::all();
+        return view('index', ['message' => $message, 'articles' => $articles]);
+    }
+
+
+
+
+
+
 
 
 
