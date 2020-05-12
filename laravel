@@ -720,7 +720,12 @@ layout.blade.php修正　　　//こいつが共通部分の中身！！！こ�
 
 
 
-//3-4  Bootstrapの適用
+
+
+
+
+
+//3-3  Bootstrapの適用
 
 
 テンプレートファイルの作成
@@ -730,9 +735,9 @@ bbs > resources > views右クリック >　新規ファイル作成　> style-sh
 style-sheet.blade.php編集
 Bootstrapを読み込ませる
 
-<meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
-<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css'>
-<style>body {padding-top: 80px;}</style>　　　//上部に余白
+<meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>                           //viewportを指定
+<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css'>　　　　　　　　　//stylesheet指定し、Bootstrapを読み込む
+<style>body {padding-top: 80px;}</style>　　　                                                                  //上部に余白
 
 
 
@@ -848,12 +853,12 @@ index.blade.php
     <p>{{ $message }}</p>
     <table class='table table-striped table-hover'>　　　　　　　//striped=一行ごと色変える　　　hover=マウス
     @foreach ($articles as $article)
-        <tr>
-            <td>
-            <a href='{{ route("article.show", ["id" =>  $article->id]) }}'>
-                {{ $article->content }},
-                {{ $article->user_name }}
-            </a>
+        <tr>　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　//「TR」とは「table row」の略で表の行部分（横方向）を指定するタグ
+            <td>                                                                              //tdタグ（td要素）は、表組みのセルを表します。
+           　　　　 <a href='{{ route("article.show", ["id" =>  $article->id]) }}'>
+　　　　　　　　　　　　　 {{ $article->content }},
+              　　　　　 {{ $article->user_name }}
+            　　　　</a>
             </td>
             <td>{{$article->user_name}}</td>
         </tr>
@@ -870,11 +875,11 @@ index.blade.php
 
 
 
-
-
 リンクをボタン化　（class=btn）
 index.blade.php
 <a href={{ route('article.new') }} class='btn btn-outline-primary'>新規投稿</a>
+                                  ↑スペース入れないとボタン化されない
+
 
 
 show.blade.php
@@ -891,14 +896,42 @@ show.blade.php
 
 
 
-//3-4　検索フォーㇺの設置
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//3-5　検索フォーㇺの設置
 
 
 
 検索タブのテンプレートを作成
 viewsに新規作成
 search.blade.php
-{{ Form::open(['method' => 'get']) }}
+
+
+{{ Form::open(['method' => 'get']) }}                                      //フォームファザード
     {{ csrf_field() }}
     <div class='form-group'>
         {{ Form::label('keyword', 'キーワード:') }}
@@ -908,9 +941,12 @@ search.blade.php
         {{ Form::submit('検索', ['class' => 'btn btn-outline-primary'])}}
         <a href={{ route('article.list') }}>クリア</a>
     </div>
-{{ Form::close() }}                //laravelでフォーム使うルール
+{{ Form::close() }}                                                            //laravelでフォーム使うルール
 
 
+
+
+記事一覧に検索フォームを追加
 
 index.blade.php
 
@@ -925,21 +961,47 @@ index.blade.php
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //3-6 検索機能の実装
 
 
 ArticleContoroller.php
 
-public function index(Request $request)       //検索タブに入力した値取り出す
+public function index(Request $request)                                              //検索タブに入力した値取り出す
     {
-        if($request->filled'('keyword')){　　　　　　　//検索条件に合ったものある？
+        if($request->filled'('keyword')){　　　　　                                     　　//検索条件に合ったものある？空じゃない？
             $keyword = $request -> input('keyword');
             $message = 'Welcome to my BBS:'.$keyword;
-            $article = Article::where('content','like','%'.$keyword.'%')->get();　　　　//hitした記事のみ取り出している
+            $article = Article::where('content','like','%'.$keyword.'%')->get();　　　              　//whereメソッドで検索、hitした記事のみ取り出している
         }else{
             $message = 'Welcome to my BBS';
+            $articles = Article::all();
         }
-        $articles = Article::all();
         return view('index', ['message' => $message, 'articles' => $articles]);
     }
 
@@ -953,3 +1015,474 @@ public function index(Request $request)       //検索タブに入力した値�
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//3-7 ルーティング設計
+
+一覧　　　　　　　　articles                index.blade.php
+
+詳細画面     　 aerticle/id             　show.blade.php
+
+新規登録画面   　  article/new             new.blade.php
+
+編集画面   　　　  aticle/edit/id          edit.blade.php
+
+
+
+ルーティング追加
+
+web.php
+
+変更前
+
+Route::get('/', function () {
+    return redirect('/articles');
+});
+
+Route::get('/articles', 'ArticleController@index')->name('article.list');
+Route::get('/article/new', 'ArticleController@create')->name('article.new');
+
+
+Route::get('/article/{id}', 'ArticleController@show')->name('article.show');
+Route::delete('/article/{id}', 'ArticleController@destroy')->name('article.delete');
+
+
+
+変更後
+
+Route::get('/', function () {
+    // return view('welcome');
+    return redirect('/articles');
+});
+
+Route::get('/articles', 'ArticleController@index')->name('article.list');
+Route::get('/article/new', 'ArticleController@create')->name('article.new');
+
+Route::post('/article', 'ArticleController@store')->name('article.store');
+Route::get('/article/edit/{id}', 'ArticleController@edit')->name('article.edit');
+Route::post('/article/update/{id}', 'ArticleController@update')->name('article.update');
+
+Route::get('/article/{id}', 'ArticleController@show')->name('article.show');
+Route::delete('/article/{id}', 'ArticleController@destroy')->name('article.delete');
+
+
+
+editメソッドに詳細ページを呼び出す
+
+ArticleController.php
+
+前
+
+ public function show(Request $request, $id, Article $article)
+    {
+        $message = 'This is your article ' . $id;
+        $article = Article::find($id);
+        return view('show', ['message' => $message, 'article' => $article]);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Article  $article
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Article $article)
+    {
+        //
+    }
+
+
+
+
+
+
+
+後
+
+ public function show(Request $request, $id, Article $article)                                          //1
+    {
+        $message = 'This is your article ' . $id;                                                       //2
+        $article = Article::find($id);                                                                  //3
+        return view('show', ['message' => $message, 'article' => $article]);                            //4
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Article  $article
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Request $request, $id,Article $article)                               //1からコピー
+    {
+        $message = 'Edit your article ' . $id;                                              //2
+        $article = Article::find($id);                                                          //3
+        return view('show', ['message' => $message, 'article' => $article]);                    //4
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//3-8 投稿フォーㇺページの作成
+
+
+動作確認
+/articles
+新規登録クリック　＞　create メソッドを呼び出している
+
+
+
+新規投稿画面の作成
+
+ArticleController.php
+
+public function create(Request $request)
+    {
+        $article = new Article();
+
+        $article->content = 'Hello BBS';
+        $article->user_name = 'paiza';
+        $article->save();
+        return redirect('/articles');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $article = new Article();
+
+        $article->content = 'Hello BBS';
+        $article->user_name = 'paiza';
+        $article->save();
+        return redirect('/articles');
+    }
+
+
+
+
+    投稿フォーム表示するため、createメソッドの修正
+    ArticleController.php
+
+前
+    public function create(Request $request)
+    {
+        $article = new Article();
+
+        $article->content = 'Hello BBS';
+        $article->user_name = 'paiza';
+        $article->save();
+        return redirect('/articles');
+    }
+
+
+
+後
+
+public function create(Request $request)
+    {
+        $message = 'New article';　　　　　　　　　　　　　//新規投稿用のフォームを表示する
+        return view('new',['message'=>$message]);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//3-9 8の続き
+
+viewsに新規ファイル作成　> new.blade.php
+
+@extends('layout')
+
+@section('content')
+    <h1>paiza bbs</h1>
+    <p>{{ $message }}</p>
+    {{ Form::open(['route' => 'article.store']) }}　　　　　　　　//①
+        <div class='form-group'>
+            {{ Form::label('content', 'Content:') }}
+            {{ Form::text('content', null) }}
+        </div>
+        <div class='form-group'>
+            {{ Form::label('user_name', 'Name:') }}
+            {{ Form::text('user_name', null) }}
+        </div>
+        <div class="form-group">
+            {{ Form::submit('作成する', ['class' => 'btn btn-primary']) }}　　　　　//作成するクリック　　＞　①のstoreを呼び出す
+            <a href={{ route('article.list') }}>一覧に戻る</a>
+        </div>
+    {{ Form::close() }}
+@endsection
+
+
+
+storeメソッドの修正
+
+ArticleController.php
+
+前
+ public function store(Request $request)
+    {
+        $article = new Article;
+
+        $article->content = 'Hello BBS';
+        $article->user_name = 'paiza';
+        $article->save();
+        return redirect('/articles');
+    }
+
+
+
+
+後
+
+    public function store(Request $request)
+{
+    $article = new Article;
+
+    $article->content = $request->content;　　　　　　　　　　　　　　　//内容取り出し
+    $article->user_name = $request->user_name;　　　　　　　　　　　　　　　　//投稿者名取り出し
+    $article->save();
+    return redirect()->route('article.show', ['id' => $article->id]);　　　　　　　　　　//詳細画面にリダイレクト
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//3-10   編集フォーム追加
+
+ArticleController.php
+
+前
+ public function edit(Request $request, $id, Article $article)
+    {
+        $message = 'Edit your article ' . $id;
+        $article = Article::find($id);
+        return view('show', ['message' => $message, 'article' => $article]);
+    }
+
+
+後
+public function edit(Request $request, $id, Article $article)
+    {
+        $message = 'Edit your article ' . $id;
+        $article = Article::find($id);
+        return view('edit', ['message' => $message, 'article' => $article]);
+    }
+
+
+
+
+
+
+
+編集フォーム表示するエディットビューを作成　（新規作成フォームをコピー）
+/bbs$ cp resources/views/new.blade.php resources/views/edit.blade.php
+
+
+
+edit.blade.php
+前
+@extends('layout')
+
+@section('content')
+    <h1>paiza bbs</h1>
+    <p>{{ $message }}</p>
+    {{ Form::open(['route' => 'article.store']) }}
+        <div class='form-group'>
+            {{ Form::label('content', 'Content:') }}
+            {{ Form::text('content', null) }}
+        </div>
+        <div class='form-group'>
+            {{ Form::label('user_name', 'Name:') }}
+            {{ Form::text('user_name', null) }}
+        </div>
+        <div class='form-group'>
+            {{ Form::submit('作成する', ['class' => 'btn btn-primary']) }}
+            <a href={{ route('article.list') }}>一覧に戻る</a>
+        </div>
+    {{ Form::close() }}
+@endsection
+
+
+
+後
+@extends('layout')
+
+@section('content')
+    <h1>paiza bbs</h1>
+    <p>{{ $message }}</p>
+    {{ Form::model($article, ['route' => ['article.update', $article->id]]) }}
+        <div class='form-group'>
+            {{ Form::label('content', 'Content:') }}
+            {{ Form::text('content', null) }}
+        </div>
+        <div class='form-group'>
+            {{ Form::label('user_name', 'Name:') }}
+            {{ Form::text('user_name', null) }}
+        </div>
+        <div class="form-group">
+            {{ Form::submit('保存する', ['class' => 'btn btn-primary']) }}
+            <a href={{ route('article.show', ['id' =>  $article->id]) }}>戻る</a>
+        </div>
+    {{ Form::close() }}
+@endsection
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//3-11 投稿の保存機能作成
+
+フォーㇺで作成した内容保存できるように、apdateメソッドの修正　
+
+ArticleController.phpのstoreメソッドコピー
+
+
+public function update(Request $request, $id,Article $article)
+    {
+ 　　　　$article = Article::find($id);
+
+        $article->content = $request->content;
+        $article->user_name = $request->user_name;
+        $article->save();
+        return redirect()->route('article.show', ['id' => $article->id]);
+
+    }
+
+
+
+編集フォーㇺ呼び出す修正を加える
+show.blade.php
+
+前
+<p>
+        <a href={{ route('article.list') }} class='btn btn-outline-primary'>一覧に戻る</a>
+    </p>
+
+
+
+後
+<p>
+        <a href={{ route('article.list') }} class='btn btn-outline-primary'>一覧に戻る</a>
+        <a href={{ route('article.edit', ["id" =>  $article->id]) }} class='btn btn-outline-primary'>編集</a>
+    </p>
+
+    <div>
+        {{ Form::open(['method' => 'delete', 'route' => ['article.delete', $article->id]]) }}
+            {{ Form::submit('削除', ['class' => 'btn btn-outline-secondary']) }}　　　　　　　　　//削除ボタンクリック　>　deleteメソッドでarticle.deleteを呼び出し
+        {{ Form::close() }}
+    </div>
+
+
+
+
+    
